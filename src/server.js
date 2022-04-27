@@ -14,15 +14,28 @@ const handleListen = () => console.log(`Listening on http://localhost:3000`);
 const server = http.createServer(app);
 const wss = new WebSocket.Server({ server });
 
+const sockets = [];
+
 wss.on("connection", (socket) => {
   //여기서의 socket은 브라우저와의 연결을 뜻한다.
+  sockets.push(socket);
+  socket["nickname"] = "Annon";
   console.log("Connected to Browser ✅");
   socket.on("close", () => console.log("Disconnected from the Browser ❌"));
   socket.on("message", (message) => {
     const translatedMessageData = message.toString("utf8");
-    console.log(translatedMessageData);
+    const parsed = JSON.parse(translatedMessageData);
+    switch (parsed.type) {
+      case "new_mesage":
+        sockets.forEach((aSocket) =>
+          aSocket.send(`${socket.nickname} : ${parsed.payload}`)
+        );
+        break;
+      case "nickName":
+        socket["nickname"] = parsed.payload;
+        break;
+    }
   });
-  socket.send("hello!!!");
 });
 
 server.listen(3000, handleListen);
