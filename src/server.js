@@ -1,5 +1,5 @@
 import http from "http";
-import WebSocket from "ws";
+import SocketIO, { Socket } from "socket.io";
 import express from "express";
 
 const app = express();
@@ -12,10 +12,15 @@ app.get("/", (req, res) => res.render("home"));
 const handleListen = () => console.log(`Listening on http://localhost:3000`);
 
 const server = http.createServer(app);
+const weServer = SocketIO(server);
+
+weServer.on("connection", (socket) => {
+  console.log(socket);
+});
+
+/*
 const wss = new WebSocket.Server({ server });
-
 const sockets = [];
-
 wss.on("connection", (socket) => {
   //여기서의 socket은 브라우저와의 연결을 뜻한다.
   sockets.push(socket);
@@ -37,5 +42,5 @@ wss.on("connection", (socket) => {
     }
   });
 });
-
+*/
 server.listen(3000, handleListen);
