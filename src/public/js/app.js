@@ -4,7 +4,6 @@ const welcome = document.getElementById("welcome");
 const form = welcome.querySelector("form");
 const room = document.getElementById("room");
 const nickname = document.getElementById("name");
-const msg = document.getElementById("msg");
 const roomname = document.getElementById("roomname");
 
 room.hidden = true;
