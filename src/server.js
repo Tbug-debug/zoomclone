@@ -1,5 +1,5 @@
 import http from "http";
-import SocketIO, { Socket } from "socket.io";
+import SocketIO from "socket.io";
 import express from "express";
 
 const app = express();
@@ -15,7 +15,13 @@ const server = http.createServer(app);
 const weServer = SocketIO(server);
 
 weServer.on("connection", (socket) => {
-  console.log(socket);
+  socket.onAny((event) => {
+    console.log(`Socket Event: ${event}`);
+  });
+  socket.on("enter_room", (roomName, welcomeRoom) => {
+    socket.join(roomName);
+    welcomeRoom();
+  });
 });
 
 /*
