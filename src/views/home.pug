@@ -10,21 +10,10 @@ html(lang="en")
         header  
             h1 Welcome to Chatting
         main 
-            div#welcome
-                form#roomname
-                    input(type="text", placeholder="room name", required)
-                    button Enter Room
-                form#name
-                    input(type="text", placeholder="nickname", required)
-                    button Save 
-                h4 Open Rooms:
-                ul
-            div#room
-                h3
-                ul
-                form#msg
-                    input(type="text", placeholder="message", required)
-                    button Send
-                
+            div#myStream
+                video#myFace(autoplay,playsinline, width="400", height="400")
+                button#mute Mute
+                button#camera Turn Camera Off
+                select#cameras
         script(src="/socket.io/socket.io.js") 
         script(src="/public/js/app.js") 
