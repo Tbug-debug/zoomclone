@@ -11,7 +11,15 @@ app.use("/public", express.static(__dirname + "/public"));
 app.get("/", (req, res) => res.render("home"));
 
 const server = http.createServer(app);
-const weServer = new Server(server);
+const wsServer = new Server(server);
+
+wsServer.on("connection", (socket) => {
+  socket.on("join_room", (roomName, done) => {
+    socket.join(roomName);
+    done();
+    socket.to(roomName).emit("Welcome");
+  });
+});
 
 const handleListen = () => console.log(`Listening on http://localhost:3000`);
 server.listen(3000, handleListen);
