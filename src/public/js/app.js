@@ -125,7 +125,7 @@ welcomeForm.addEventListener("submit", handleWelcomeSubmit);
 socket.on("welcome", async () => {
   myDataChannel = myPeerConnection.createDataChannel("chat");
   myDataChannel.addEventListener("message", (event) => {
-    addMessage(`A : ${event.data}`);
+    addMessage(`B : ${event.data}`);
   });
   console.log("made data channel");
   const offer = await myPeerConnection.createOffer();
@@ -138,7 +138,7 @@ socket.on("offer", async (offer) => {
   myPeerConnection.addEventListener("datachannel", (event) => {
     myDataChannel = event.channel;
     myDataChannel.addEventListener("message", (event) => {
-      addMessage(`B : ${event.data}`);
+      addMessage(`A : ${event.data}`);
     });
   });
   console.log("recived the offer");
