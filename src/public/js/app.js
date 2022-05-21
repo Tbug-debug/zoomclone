@@ -5,6 +5,8 @@ const muteBtn = document.getElementById("mute");
 const cameraBtn = document.getElementById("camera");
 const camerasSelect = document.getElementById("cameras");
 const call = document.getElementById("call");
+const DataMessage = document.getElementById("msg");
+const input = DataMessage.querySelector("input");
 
 call.hidden = true;
 
@@ -13,6 +15,8 @@ let muted = false;
 let cameraOff = false;
 let roomName;
 let myPeerConnection;
+let myDataChannel;
+let myMessage;
 
 async function getCarmars() {
   try {
@@ -119,6 +123,11 @@ welcomeForm.addEventListener("submit", handleWelcomeSubmit);
 
 // Socket Code
 socket.on("welcome", async () => {
+  myDataChannel = myPeerConnection.createDataChannel("chat");
+  myDataChannel.addEventListener("message", (event) => {
+    addMessage(`A : ${event.data}`);
+  });
+  console.log("made data channel");
   const offer = await myPeerConnection.createOffer();
   myPeerConnection.setLocalDescription(offer);
   console.log("sent the offer");
@@ -126,6 +135,12 @@ socket.on("welcome", async () => {
 });
 
 socket.on("offer", async (offer) => {
+  myPeerConnection.addEventListener("datachannel", (event) => {
+    myDataChannel = event.channel;
+    myDataChannel.addEventListener("message", (event) => {
+      addMessage(`B : ${event.data}`);
+    });
+  });
   console.log("recived the offer");
   myPeerConnection.setRemoteDescription(offer);
   const answer = await myPeerConnection.createAnswer();
@@ -143,6 +158,23 @@ socket.on("ice", (ice) => {
   console.log("received candidate");
   myPeerConnection.addIceCandidate(ice);
 });
+
+function addMessage(message) {
+  const ul = document.querySelector("#ul");
+  const li = document.createElement("li");
+  li.innerText = message;
+  ul.appendChild(li);
+}
+
+function handleSubmitMessage(event) {
+  event.preventDefault();
+  myMessage = input.value;
+  addMessage(`YOU : ${myMessage}`);
+  myDataChannel.send(myMessage);
+  input.value = "";
+}
+
+DataMessage.addEventListener("submit", handleSubmitMessage);
 
 // RTC Code
 
